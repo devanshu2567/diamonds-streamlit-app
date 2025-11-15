@@ -1,7 +1,8 @@
+# Streamlit app requirements — use wheel-friendly versions for Python 3.13
 streamlit==1.24.0
-scikit-learn==1.2.2
-pandas==2.0.3
-numpy==1.24.3
+numpy>=1.26.0
+pandas==2.1.3
+scikit-learn==1.6.1
 joblib==1.3.2
 cloudpickle==2.2.1
 requests==2.31.0
