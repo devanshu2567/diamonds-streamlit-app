@@ -1,20 +1,34 @@
-
-import streamlit as st
-import pandas as pd
-import joblib
 import os
+import traceback
+import joblib
+import cloudpickle
+import streamlit as st
 
-# Load the pre-trained pipeline
+MODEL_PATH = "pipeline.joblib"
+
 @st.cache_resource
 def load_pipeline():
-    # In a real deployment, ensure pipeline.joblib is accessible.
-    # For this example, we assume it's in the same directory or a known path.
-    # If deployed on Streamlit Cloud, you'd typically upload this file along with app.py
-    pipeline_path = 'pipeline.joblib'
-    if not os.path.exists(pipeline_path):
-        st.error(f"Model file not found at {pipeline_path}. Please ensure it's uploaded.")
+    # 1) Make sure file exists
+    if not os.path.exists(MODEL_PATH):
+        st.error(f"Model file not found at {MODEL_PATH}. Please upload pipeline.joblib to the repo root.")
         st.stop()
-    return joblib.load(pipeline_path)
+
+    # 2) Try joblib first, then cloudpickle, and show full traceback on failure
+    try:
+        return joblib.load(MODEL_PATH)
+    except Exception as e_job:
+        try:
+            with open(MODEL_PATH, "rb") as f:
+                return cloudpickle.load(f)
+        except Exception as e_cloud:
+            st.error("Failed to load the model. Full debug information shown below.")
+            st.text("Primary (joblib) error:")
+            st.text(traceback.format_exc())  # shows the error from cloudpickle attempt
+            # Provide the first error as well
+            st.text("If you want the original joblib error, see the variable 'joblib_error' below.")
+            st.text(str(e_job))
+            st.stop()
+   
 
 pipeline = load_pipeline()
 
