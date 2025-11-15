@@ -1,8 +1,9 @@
-streamlit==1.24.0
+# requirements tuned for Python 3.13 / Streamlit Community Cloud
+streamlit>=1.41.0
 numpy>=1.26.0
 pandas>=2.2.3
 scikit-learn==1.6.1
 joblib==1.3.2
 cloudpickle==2.2.1
 requests==2.31.0
-Pillow>=11.0.0
+# do NOT pin Pillow here — let Streamlit pick a compatible pillow wheel
